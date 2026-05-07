@@ -1,0 +1,111 @@
+# ============================================================
+# REST Client - API Quotes
+# Requiere la extension REST Client de Huachao en VS Code
+# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+# ============================================================
+
+@baseUrl = http://localhost:3000/api/v1
+
+# Variable para reutilizar el id del favorito creado.
+# Completar manualmente con el id devuelto por el POST.
+@favoriteId = REEMPLAZAR_CON_ID
+
+
+# ============================================================
+# 1. GET /quotes/random
+# Espera: 200 { quote, author }
+# ============================================================
+
+### Obtener frase aleatoria
+GET {{baseUrl}}/quotes/random
+Content-Type: application/json
+
+
+# ============================================================
+# 2. POST /quotes/favorites
+# Espera: 201 { message, favorite }
+# El favorite debe incluir id y createdAt
+# ============================================================
+
+### Agregar frase a favoritos (caso exitoso)
+POST {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+{
+  "quote": "The only way to do great work is to love what you do.",
+  "author": "Steve Jobs"
+}
+
+###
+
+### Agregar otra frase para tener mas de un favorito
+POST {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+{
+  "quote": "In the middle of difficulty lies opportunity.",
+  "author": "Albert Einstein"
+}
+
+###
+
+### Error 400 - body sin campo quote
+POST {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+{
+  "author": "Autor sin frase"
+}
+
+###
+
+### Error 400 - body sin campo author
+POST {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+{
+  "quote": "Una frase sin autor"
+}
+
+###
+
+### Error 400 - body completamente vacio
+POST {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+{}
+
+
+# ============================================================
+# 3. GET /quotes/favorites
+# Espera: 200 { favorites: [ ... ] }
+# ============================================================
+
+### Listar todos los favoritos
+GET {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+###
+
+# PRUEBA DE PERSISTENCIA
+# Detener el servidor (Ctrl+C), volver a iniciarlo con npm start
+# y ejecutar este request de nuevo. Los favoritos deben seguir presentes.
+### Verificar persistencia tras reinicio del servidor
+GET {{baseUrl}}/quotes/favorites
+Content-Type: application/json
+
+
+# ============================================================
+# 4. DELETE /quotes/favorites/:id
+# Espera: 200 { message }
+# ============================================================
+
+### Eliminar favorito por id (reemplazar @favoriteId antes de ejecutar)
+DELETE {{baseUrl}}/quotes/favorites/{{favoriteId}}
+Content-Type: application/json
+
+###
+
+### Error 404 - id que no existe
+DELETE {{baseUrl}}/quotes/favorites/9999999999999
+Content-Type: application/json
